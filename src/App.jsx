@@ -2,6 +2,7 @@ import React from 'react';
 import Navbar from './Components/Navbar';
 import Categories from './Components/Categories';
 import ListingCard from './Components/ListingCard';
+import Footer from './Components/Footer';
 
 const listings = [
     {
@@ -311,6 +312,8 @@ function App() {
           ))}
         </div>
       </div>
+
+      <Footer />
 
     </div>
   );
