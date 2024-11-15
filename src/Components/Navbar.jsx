@@ -41,7 +41,7 @@ const Navbar = () => {
 			}`}
 		>
 			<nav className="flex justify-between items-center w-full">
-				<div className="flex-grow flex justify-start">
+				<div className="flex-1 flex justify-start">
 					<img
 						src={logo}
 						alt="Airbnb Logo"
@@ -108,7 +108,7 @@ const Navbar = () => {
 				</div>
 
 				{/* Profile and Menu section with equal width */}
-				<div className="flex-grow flex justify-end items-center gap-4">
+				<div className="flex-1 flex justify-end items-center gap-4">
 					<div className="text-sm cursor-pointer transition duration-200 hover:bg-gray-100 p-3 rounded-full">
 						Airbnb your home
 					</div>
