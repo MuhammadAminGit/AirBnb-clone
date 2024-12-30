@@ -1,15 +1,46 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
+import api from "../api/axiosInstance";
+import { Snackbar, Alert } from "@mui/material";
 
 const BookingPage = () => {
   const location = useLocation();
-  const {
-    listing,
-    checkIn,
-    checkOut,
-    guests,
-    total,
-  } = location.state || {};
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+
+  const handleConfirmBooking = async () => {
+    try {
+      const response = await api.post(
+        "/bookings",
+        {
+          listing,
+          checkIn,
+          checkOut,
+          guests,
+          total,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem('jwtToken')}`, // JWT from sessionStorage
+          },
+        }
+      );
+
+      if (response.status === 201 || response.status === 200) {
+        setSnackbar({ open: true, message: 'Booking confirmed!', severity: 'success' });
+      } else {
+        setSnackbar({ open: true, message: `Failed to book: ${response.data.message}`, severity: 'error' });
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setSnackbar({ open: true, message: error.response?.data?.message || 'Error confirming booking', severity: 'error' });
+    }
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
+  const { listing, checkIn, checkOut, guests, total } = location.state || {};
 
   if (!listing) {
     return <p>No listing data available</p>;
@@ -20,7 +51,6 @@ const BookingPage = () => {
     name,
     description,
     host_name,
-    host_picture_url,
     property_type,
     room_type,
     accommodates,
@@ -28,8 +58,6 @@ const BookingPage = () => {
     beds,
     bathrooms_text,
     amenities,
-    number_of_reviews,
-    rating,
   } = listing;
 
   return (
@@ -83,12 +111,24 @@ const BookingPage = () => {
           </p>
         </div>
         <button
-          onClick={() => alert("Booking confirmed!")}
+          onClick={handleConfirmBooking}
           className="bg-red-500 text-white w-full py-2 mt-4 rounded-lg shadow-md hover:bg-red-600 transition"
         >
           Confirm Booking
         </button>
       </div>
+
+      {/* Snackbar for Booking Confirmation */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

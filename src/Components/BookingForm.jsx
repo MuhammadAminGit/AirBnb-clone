@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation} from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const BookingForm = ({ price, id, listing }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Set default dates
   const today = new Date();
@@ -16,6 +17,7 @@ const BookingForm = ({ price, id, listing }) => {
   const [checkOut, setCheckOut] = useState(defaultCheckOut);
   const [guests, setGuests] = useState(2);
   const [error, setError] = useState("");
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
 
   // Calculate total price
   const calculateTotal = () => {
@@ -29,6 +31,12 @@ const BookingForm = ({ price, id, listing }) => {
 
   // Validation and navigation
   const handleReserve = () => {
+    const token = sessionStorage.getItem("jwtToken");
+    if (!token) {
+      setShowLoginPopup(true);
+      return;
+    }
+
     if (!checkIn) {
       setError("Check-in date is required.");
       return;
@@ -60,7 +68,7 @@ const BookingForm = ({ price, id, listing }) => {
       style={{ maxHeight: "fit-content" }}
     >
       <p className="text-2xl font-semibold">
-        ${price} <span className="text-lg text-gray-500">/ night</span>
+        {price} <span className="text-lg text-gray-500">/ night</span>
       </p>
       <div className="mt-4">
         <label className="block text-gray-700 mb-2">Check-in</label>
@@ -103,6 +111,32 @@ const BookingForm = ({ price, id, listing }) => {
       >
         Reserve
       </button>
+
+      {/* Login Popup */}
+      {showLoginPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg p-6 shadow-md max-w-sm w-full text-center">
+            <h2 className="text-xl font-semibold mb-4">
+              Login Required
+            </h2>
+            <p className="text-gray-700 mb-6">
+              Please log in to proceed with the booking.
+            </p>
+            <button
+              onClick={() => navigate("/login" , { state: { from: location.pathname } })}
+              className="bg-red-500 text-white w-full py-2 rounded-lg shadow-md hover:bg-red-600 transition"
+            >
+              Go to Login
+            </button>
+            <button
+              onClick={() => setShowLoginPopup(false)}
+              className="mt-4 text-gray-600 underline text-sm hover:text-gray-800"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

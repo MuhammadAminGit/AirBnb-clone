@@ -3,6 +3,10 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const listingRoutes = require('./routes/listingRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
+const authRoutes = require('./routes/auth');
+const protectedRoutes = require('./routes/protectedRoutes');
+const userRoutes = require('./routes/userRoutes');
+const adminRoutes = require('./routes/admin');
 require('dotenv').config();
 const MONGO_URI = process.env.MONGO_URI;
 
@@ -22,6 +26,11 @@ mongoose.connect(MONGO_URI).then(() => {
 
 // Routes
 app.use('/api/listings', listingRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api', protectedRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/admin', adminRoutes);
+
 
 module.exports = app;

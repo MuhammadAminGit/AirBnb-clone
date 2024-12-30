@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/long-logo.png";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import LanguageIcon from "@mui/icons-material/Language";
 import BasicMenu from "./ProfileMenu";
 import CloseIcon from "@mui/icons-material/Close";
+import {AuthContext} from '../contexts/AuthContext';
 
 const Navbar = () => {
 	const [isSearchOpen, setIsSearchOpen] = useState(false);
 	const [isScrolled, setIsScrolled] = useState(false);
 	const [activeLink, setActiveLink] = useState("Stays");
+	const {isLoggedIn, logout} = useContext(AuthContext);
+	const navigate = useNavigate();
 
 	// Track scroll event
 	useEffect(() => {
@@ -46,6 +50,7 @@ const Navbar = () => {
 						src={logo}
 						alt="Airbnb Logo"
 						className="h-8 cursor-pointer"
+						onClick={() => navigate("/")}
 					/>
 				</div>
 
@@ -115,7 +120,11 @@ const Navbar = () => {
 					<div className="cursor-pointer transition duration-200 hover:bg-gray-100 p-3 rounded-full">
 						<LanguageIcon sx={{ fontSize: "1.3rem" }} />
 					</div>
-					<BasicMenu />
+					{isLoggedIn ? (
+					<BasicMenu isLoggedIn={true} onLogout={logout}/>
+					) : (
+						<BasicMenu isLoggedIn={false}/>
+					)}
 				</div>
 			</nav>
 
