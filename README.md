@@ -1,5 +1,14 @@
 # Airbnb Clone
 
+## Screenshots
+
+
+<div style="display: flex; justify-content: space-between; align-items: center;">
+  <img src="./Screenshots/airbnb.png" style="width: 32%;">
+  <img src="./Screenshots/airbnb_listing.png" style="width: 32%;">
+  <img src="./Screenshots/airbnb_signup.png" style="width: 32%;">
+</div>
+
 ## Setup Instructions
 
 ### Frontend Setup
